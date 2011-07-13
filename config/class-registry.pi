@@ -1,0 +1,18 @@
+{
+    main_module_name => 'Class::Registry',
+    file_names => [qw(
+        lib/Class/Registry.pm
+        lib/Class/Registry.pod
+        t/class-registry.t
+        config/class-registry.pi
+    )],
+    req_modules => {
+        'Carp' => 0,
+        'UNIVERSAL::require' => 0,
+    },
+    t_req_modules => {
+        'Path::Class' => 0,
+        'Test::More' => 0,
+        'Test::Class' => 0,
+    },
+};

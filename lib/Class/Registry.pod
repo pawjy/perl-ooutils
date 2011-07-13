@@ -1,0 +1,92 @@
+=head1 NAME
+
+Class::Registry - A class name registry
+
+=head1 SYNOPSIS
+
+  use Class::Registry;
+  
+  {
+    package FooClass;
+    Class::Registry->default(foo => 'FooClass');
+  }
+  {
+    package My::FooClass;
+    use base qw(FooClass);
+    Class::Registry->set(foo => 'My::FooClass');
+  }
+  
+  my $foo = Class::Registry->get('foo')->new;
+  isa_ok $foo, 'My::FooClass';
+  
+  dies_ok {
+    my $bar = Class::Registry->require('bar')->new;
+  };
+
+=head1 DESCRIPTION
+
+The C<Class::Registry> module defines a registry for short names of
+Perl classes (packages).  It might be useful where there could be
+different sets of subclasses and a library does not know which set of
+subclasses should be used a priori.
+
+=head1 METHODS
+
+=over 4
+
+=item Class::Registry->set($key => $package)
+
+Register the package I<$package> with the short name I<$key>, even
+when the name I<$key> has already been registered for other package.
+
+=item Class::Registry->default($key => $package)
+
+Register the package I<$package> with the short name I<$key>, only
+when the name I<$key> is not registered yet.
+
+=item $package = Class::Registry->get($key)
+
+Returns the package name registered for the short name I<$key>, if
+any, or false otherwise.
+
+=item $package = Class::Registry->default($key)
+
+Returns the package name registered for the short name I<$key>, if
+any, or dies otherwise.  The package is C<require>d before returned.
+
+=back
+
+=head1 DISTRIBUTION
+
+The latest version of this module would be available at:
+<https://github.com/wakaba/perl-ooutils>.
+
+=head1 HISTORY
+
+This module was originally developed as part of the Hatena Message
+2010 project.
+
+=over 4
+
+=item 1.0 (2011-07-13)
+
+First released version.
+
+=back
+
+=head1 AUTHOR
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to id:shiba_yu36 for his important advices.
+
+=head1 LICENSE
+
+Copyright 2009-2011 Hatena <http://www.hatena.ne.jp/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
