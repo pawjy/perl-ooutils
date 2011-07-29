@@ -54,6 +54,10 @@ any, or false otherwise.
 Returns the package name registered for the short name I<$key>, if
 any, or dies otherwise.  The package is C<require>d before returned.
 
+=item @keys = Class::Registry->keys
+
+Returns a list of the registered keys.
+
 =back
 
 =head1 DISTRIBUTION
@@ -80,7 +84,7 @@ Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to id:shiba_yu36 for his important advices.
+Thanks to id:shiba_yu36 and id:motemen for their important advices.
 
 =head1 LICENSE
 

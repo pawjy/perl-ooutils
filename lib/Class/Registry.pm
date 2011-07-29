@@ -1,7 +1,7 @@
 package Class::Registry;
 use strict;
 use warnings;
-our $VERSION = '1.0';
+our $VERSION = '1.1';
 use UNIVERSAL::require;
 use Carp;
 
@@ -32,6 +32,10 @@ sub Class::Registry::require {
     $class_name->require or die "$key: $@";
     
     return $class_name;
+}
+
+sub keys {
+    return CORE::keys %$defs;
 }
 
 1;

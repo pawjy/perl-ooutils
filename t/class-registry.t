@@ -17,12 +17,18 @@ use Class::Registry;
     $INC{'test/class/registry/test2.pm'} = 1;
 }
 
-sub _default : Test(3) {
+sub _default : Test(5) {
     Class::Registry->default(deftest => 'test::class::registry::default');
     is +Class::Registry->get('deftest'), 'test::class::registry::default';
 
+    my @keys = Class::Registry->keys;
+    ok grep { $_ eq 'deftest' } @keys;
+
     Class::Registry->set(deftest => 'test::class::registry::test2');
     is +Class::Registry->get('deftest'), 'test::class::registry::test2';
+
+    @keys = Class::Registry->keys;
+    ok grep { $_ eq 'deftest' } @keys;
     
     Class::Registry->default(deftest => 'test::class::registry::default2');
     is +Class::Registry->get('deftest'), 'test::class::registry::test2';
