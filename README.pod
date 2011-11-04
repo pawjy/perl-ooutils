@@ -1,1 +1,23 @@
-lib/Class/Registry.pod
+=head1 NAME
+
+perl-ooutils - Tiny object-oriented programming utilities for Perl
+
+=head1 MODULES
+
+=over 4
+
+=item * L<Class::Registry>
+
+=item * L<Operation::Response>
+
+=back
+
+=head1 AUTHOR
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>
+
+=head1 LICENSE
+
+See each module for its license terms.
+
+=cut
