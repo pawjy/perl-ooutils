@@ -1,0 +1,18 @@
+{
+    main_module_name => 'List::Ish',
+    file_names => [qw(
+        lib/List/Ish.pm
+        lib/List/Ish.pod
+        t/list-ish/02_method.t t/list-ish/basic.t t/list-ish/filter.t
+        t/list-ish/accessors.t t/list-ish/clone.t t/list-ish/iteration.t
+        config/dist/list-ish.pi
+    )],
+    req_modules => {
+        
+    },
+    t_req_modules => {
+        'Path::Class' => 0,
+        'Test::More' => 0,
+        'Test::Class' => 0,
+    },
+};

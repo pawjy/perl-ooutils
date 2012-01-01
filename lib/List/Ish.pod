@@ -279,6 +279,20 @@ values are C<1>.
 
 =back
 
+=head1 AVAILABILITY
+
+The latest version of this module is available at
+<https://github.com/wakaba/perl-ooutils/blob/master/lib/List/Ish.pm>.
+
+An outdated copy of this module might be available as a tarball
+package from <http://wakaba.github.com/packages/#perl-list-ish>,
+though use of the latest version available from the Git repository is
+always preferred.
+
+=head1 DEPENDENCY
+
+This module does not require any other module.
+
 =head1 HISTORY
 
 =over 4

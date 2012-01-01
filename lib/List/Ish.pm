@@ -2,7 +2,6 @@ package List::Ish;
 use strict;
 use warnings;
 our $VERSION = '0.04';
-use Carp qw/croak/;
 
 sub new {
     my $class = shift;
@@ -75,21 +74,18 @@ sub prepend {
 
 sub each {
     my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
     $code->($_) for @{$self->dup};
     $self;
 }
 
 sub map {
     my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
     my @collected = CORE::map &$code, @{$self->dup};
     return $self->new(\@collected);
 }
 
 sub grep {
     my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
     my @grepped = CORE::grep &$code, @$self;
     return $self->new(\@grepped);
 }
@@ -116,14 +112,12 @@ sub uniq_by_key {
 
 sub find {
     my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
     for (@$self) { &$code and return $_ }
     return;
 }
 
 sub has {
     my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
     for (@$self) { &$code and return 1 }
     return 0;
 }
