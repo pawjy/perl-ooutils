@@ -114,16 +114,6 @@ sub sort {
     return $self->new(\@sorted);
 }
 
-sub sort_by {
-    my ($self, $code, $cmp) = @_;
-
-    my @sorted = $cmp ?
-        CORE::map { $_->[1] } CORE::sort { $cmp->($a->[0], $b->[0]) } CORE::map { [$code->($_), $_] } @$self :
-        CORE::map { $_->[1] } CORE::sort { $a->[0] <=> $b->[0] } CORE::map { [$code->($_), $_] } @$self;
-
-    return $self->new(\@sorted);
-}
-
 sub length {
     scalar @{$_[0]};
 }

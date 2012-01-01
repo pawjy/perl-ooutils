@@ -141,16 +141,6 @@ sub test_sort : Tests(5) {
     is_deeply \@ret, [[3, 2, 1]];
 }
 
-sub test_sort_by : Tests(4) {
-    my $list = list([ [3], [1], [2] ]);
-    isa_ok $list->sort_by(sub { $_->[0] }), 'List::Ish';
-    is_deeply $list->sort_by(sub { $_->[0] })->to_a, [[1], [2], [3]];
-    is_deeply $list->sort_by(sub { $_->[0] }, sub { $_[1] <=> $_[0] })->to_a, [[3], [2], [1]];
-    my @ret = $list->sort_by(sub { $_->[0] });
-    is_deeply \@ret, [[[1], [2], [3]]];
-}
-
-
 sub test_length_and_size : Tests(4) {
     for my $method (qw/length size/) {
         is list(1, 2, 3, 4)->size, 4;
