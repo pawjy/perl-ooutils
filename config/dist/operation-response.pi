@@ -3,7 +3,7 @@
     file_names => [qw(
         lib/Operation/Response.pm
         t/operation-response.t
-        config/operation-response.pi
+        config/dist/operation-response.pi
     )],
     req_modules => {
         'Class::Accessor::Fast' => 0,

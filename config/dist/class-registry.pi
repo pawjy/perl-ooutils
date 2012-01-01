@@ -4,7 +4,7 @@
         lib/Class/Registry.pm
         lib/Class/Registry.pod
         t/class-registry.t
-        config/class-registry.pi
+        config/dist/class-registry.pi
     )],
     req_modules => {
         'Carp' => 0,

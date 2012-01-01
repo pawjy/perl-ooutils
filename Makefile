@@ -4,8 +4,8 @@ all: dist
 
 dist: always
 	mkdir -p dist
-	$(GENERATEPMPACKAGE) config/class-registry.pi dist/
-	$(GENERATEPMPACKAGE) config/operation-response.pi dist/
+	$(GENERATEPMPACKAGE) config/dist/class-registry.pi dist/
+	$(GENERATEPMPACKAGE) config/dist/operation-response.pi dist/
 
 test:
 	prove t/*.t t/list-ish/*.t
