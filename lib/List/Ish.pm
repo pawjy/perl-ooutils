@@ -94,6 +94,26 @@ sub grep {
     return $self->new(\@grepped);
 }
 
+sub uniq_by {
+    my ($self, $is_equal) = @_;
+    my @result;
+    $self->each(
+        sub {
+            foreach (@result) {
+                return if $is_equal->($_[0], $_);
+            }
+            CORE::push @result, $_[0];
+        }
+    );
+    return $self->new(\@result);
+}
+
+sub uniq_by_key {
+    my ($self, $to_key) = @_;
+    my %has;
+    return scalar $self->grep(sub { not($has{$to_key->()}++) });
+}
+
 sub find {
     my ($self, $code) = @_;
     croak "Argument must be a code" unless ref $code eq 'CODE';
