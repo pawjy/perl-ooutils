@@ -116,7 +116,7 @@ sub test_collect_and_map : Tests(5) {
         is_deeply $list->to_a, [qw/foo bar baz/];
 
         my @new = $list->$method(sub { s/^ba//; $_ });
-        is_deeply \@new, [qw/foo r z/];
+        is_deeply \@new, [[qw/foo r z/]];
         is_deeply $list->to_a, [qw/foo bar baz/];
     }
 }
@@ -127,7 +127,7 @@ sub test_grep : Tests(3) {
     is_deeply $list->grep(sub { m/^b/ })->to_a, [qw/bar baz/];
 
     my @ret = $list->grep(sub { m/^b/ });
-    is_deeply \@ret, [qw/bar baz/];
+    is_deeply \@ret, [[qw/bar baz/]];
 }
 
 sub test_sort : Tests(5) {
@@ -138,7 +138,7 @@ sub test_sort : Tests(5) {
     is_deeply $list->to_a, [3, 1, 2];
 
     my @ret = $list->sort(sub { $_[1] <=> $_[0] });
-    is_deeply \@ret, [3, 2, 1];
+    is_deeply \@ret, [[3, 2, 1]];
 }
 
 sub test_sort_by : Tests(4) {
@@ -147,7 +147,7 @@ sub test_sort_by : Tests(4) {
     is_deeply $list->sort_by(sub { $_->[0] })->to_a, [[1], [2], [3]];
     is_deeply $list->sort_by(sub { $_->[0] }, sub { $_[1] <=> $_[0] })->to_a, [[3], [2], [1]];
     my @ret = $list->sort_by(sub { $_->[0] });
-    is_deeply \@ret, [[1], [2], [3]];
+    is_deeply \@ret, [[[1], [2], [3]]];
 }
 
 

@@ -86,14 +86,14 @@ sub map {
     my ($self, $code) = @_;
     croak "Argument must be a code" unless ref $code eq 'CODE';
     my @collected = CORE::map &$code, @{$self->dup};
-    wantarray ? @collected : $self->new(\@collected);
+    return $self->new(\@collected);
 }
 
 sub grep {
     my ($self, $code) = @_;
     croak "Argument must be a code" unless ref $code eq 'CODE';
     my @grepped = CORE::grep &$code, @$self;
-    wantarray ? @grepped : $self->new(\@grepped);
+    return $self->new(\@grepped);
 }
 
 sub find {
@@ -113,7 +113,7 @@ sub has {
 sub sort {
     my ($self, $code) = @_;
     my @sorted = $code ? CORE::sort { $code->($a, $b) } @$self : CORE::sort @$self;
-    wantarray ? @sorted : $self->new(\@sorted);
+    return $self->new(\@sorted);
 }
 
 sub sort_by {
@@ -123,7 +123,7 @@ sub sort_by {
         CORE::map { $_->[1] } CORE::sort { $cmp->($a->[0], $b->[0]) } CORE::map { [$code->($_), $_] } @$self :
         CORE::map { $_->[1] } CORE::sort { $a->[0] <=> $b->[0] } CORE::map { [$code->($_), $_] } @$self;
 
-    wantarray ? @sorted : $self->new(\@sorted);
+    return $self->new(\@sorted);
 }
 
 sub length {

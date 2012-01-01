@@ -105,7 +105,7 @@ to C<shift()>/C<pop()> method.
 =item slice ( I<$start>, I<$end> )
 
 Returns the elements whose indexes are between C<$start> and C<$end>
-as a List::Ish object.
+as a new L<List::Ish> object.
 
   $list = List::Ish->new([qw(1 2 3 4)]);
   $list->slice(1, 2) #=> [2, 3]
@@ -128,8 +128,8 @@ blessed by List::Ish.
 =item map ( I<$code> )
 
 Executes C<$code> with each element of C<$self>, a refernce to an
-array blessed by List::Ish using CORE::map() and returns the
-results as a list or List::Ish object along with the context.
+array blessed by List::Ish using CORE::map() and returns the results
+as a new L<List::Ish> object.
 
   $list = List::Ish->new([1, 2, 3]);
   $list->map(sub { $_ * 2 }); #=> [2, 4, 6]
@@ -137,8 +137,8 @@ results as a list or List::Ish object along with the context.
 =item grep ( I<$code> )
 
 Executes C<$code> with each element of C<$self>, a refernce to an
-array blessed by List::Ish using CORE::grep() and returns the
-results as a list or List::Ish object along with the context.
+array blessed by List::Ish using CORE::grep() and returns the results
+as a new L<List::Ish> object.
 
   $list = List::Ish->new([qw(1 2 3 4)]);
   $list->grep(sub { ($_ % 2) == 0 }); #=> [2, 4]
@@ -178,8 +178,8 @@ false value.
 
 =item sort ( I<$code> )
 
-Sorts out each element and returns the result as a list or
-List::Ish object along with the context.
+Sorts out each element and returns the result as a new L<List::Ish>
+object.
 
   $list = List::Ish->new([qw(3 2 4 1]);
   $list->sort;                          #=> [1, 2, 3, 4]
@@ -188,7 +188,7 @@ List::Ish object along with the context.
 =item sort_by ( I<$code>, I<$cmp> )
 
 Sorts out each element with Schwartzian transform returns the result
-as a list or List::Ish object along with the context.
+as a new L<List::Ish> object.
 
   $list = List::Ish->new([ [3], [2], [4], [1]]);
   $list->sort_by(sub { $_->[0] }); #=> [[1], [2], [3], [4]]
