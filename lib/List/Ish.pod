@@ -310,6 +310,10 @@ E<lt>secondlife at hatena ne jp<gt>, and Kazuhiro Osawa E<lt>yappo
 <at> shibuya <döt> plE<gt>.  They acknowledge naoya, kentaro,
 tokuhirom, kan, and lopnor for their contributions.
 
+Some of methods are originally developed as extensions to
+L<List::Rubyish> or L<DBIx::MoCo::List> by members of Hatena Platform
+Development Team, including id:wakabatan and id:mechairoi.
+
 =head1 AUTHOR
 
 Wakaba <w@suika.fam.cx>.
