@@ -46,7 +46,7 @@ sub slice {
     my $last = $#{$self};
     if (defined $end) {
         if ($start == 0 && $last <= $end) {
-            return $self;
+            return $self->dup;
         } else {
             $end = $last if $last < $end;
             return $self->new([ @$self[ $start .. $end ] ]);
@@ -54,7 +54,7 @@ sub slice {
     } elsif (defined $start && 0 < $start && $last <= $start) {
         return $self->new([]);
     } else {
-        return $self;
+        return $self->dup;
     }
 }
 
