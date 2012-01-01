@@ -1,31 +1,7 @@
-package List::Rubyish;
+package List::Ish;
 use strict;
 use warnings;
-use 5.008001;
-use overload
-    '<<'     => sub {
-        my($self, $add) = @_;
-        $add = [ $add ] unless ref($add) eq 'ARRAY' || ref($add) eq ref($self);
-        $self->push(@$add);
-    },
-    '>>'     => sub {
-        my($self, $add) = @_;
-        if (ref($self) eq ref($add)) {
-            my $tmp = $self; $self = $add; $add = $tmp;
-        } elsif (ref($add) ne 'ARRAY') {
-            $add = [ $add ];
-        }
-        $self->unshift(@$add);
-    },
-    '+'      => sub {
-        my($self, $add, $flag) = @_;
-        $add = [ $add ] unless ref($add) eq 'ARRAY' || ref($add) eq ref($self);
-        $self->add($add, $flag);
-    },
-    fallback => 1;
-
-our $VERSION = '0.03';
-
+our $VERSION = '0.04';
 use Carp qw/croak/;
 use List::Util ();
 use List::MoreUtils ();
@@ -33,8 +9,7 @@ use List::MoreUtils ();
 sub new {
     my $class = shift;
     $class = ref $class if ref $class;
-    my $array =  @_ > 0 ? (@_ == 1 && ref($_[0]) eq 'ARRAY') ? shift : [ @_ ] : [];
-    bless $array, $class;
+    return bless $_[0] || [], $class;
 }
 
 sub push {
@@ -58,21 +33,11 @@ sub pop {
 }
 
 sub first {
-    my ($self, $num) = @_;
-    if (defined $num) {
-        return $self->slice(0, $num - 1);
-    } else {
-        return $self->[0];
-    }
+    return $_[0]->[0];
 }
 
 sub last {
-    my ($self, $num) = @_;
-    if (defined $num) {
-        return $self->slice($self->_last_index - $num + 1, $self->_last_index);
-    } else {
-        return $self->[-1];
-    }
+    return $_[0]->[-1];
 }
 
 sub slice {
@@ -93,85 +58,10 @@ sub slice {
     }
 }
 
-sub dump {
-    my $self = CORE::shift;
-    require Data::Dumper;
-    Data::Dumper->new([ $self->to_a ])->Purity(1)->Terse(1)->Dump;
-}
-
-sub zip {
-    my $self = CORE::shift;
-    my $array = \@_;
-    my $index = 0;
-    $self->collect(sub { 
-         my $ary = $self->new([$_]);
-         $ary->push($_->[$index]) for @$array;
-         $index++;
-         $ary;
-    });
-}
-
-sub delete {
-    my ($self, $value, $code) = @_;
-    my $found = 0;
-    if (ref $value eq 'CODE') {
-        do { my $item = $self->shift; $value->($item) ? $found = 1 : $self->push($item) } for (0..$self->_last_index);
-    } else {
-        do { my $item = $self->shift; $item eq $value ? $found = 1 : $self->push($item) } for (0..$self->_last_index);
-    }
-    $found ? $value 
-           : ref $code eq 'CODE' ? do { local $_ = $value; return $code->($_) }
-                                 : return ;
-}
-
-sub delete_at {
-    my ($self, $pos) = @_;
-    my $last_index = $self->_last_index;
-    return if $pos > $last_index ;
-    my $result;
-    $_ == $pos ? $result = $self->shift 
-               : $self->push($self->shift) for 0..$last_index;
-    return $result;
-}
-
-sub delete_if {
-    my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
-    my $last_index = $self->_last_index;
-    for (0..$last_index) {
-        my $item = $self->shift;
-        local $_ = $item;
-        $self->push($item) unless $code->($_);
-    }
-    return $self;
-}
-
-sub reject {
-    my ($self, $code) = @_;
-    return $self->dup->delete_if($code);
-}
-
-sub inject {
-    my ($self, $result, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
-    $result = $code->($result, $_) for @{$self->dup};
-    return $result;
-}
-
 sub join {
     my ($self, $delimiter) = @_;
     join $delimiter, @$self;
 }
-
-sub each_index {
-    my ($self, $code) = @_;
-    $self->new([ 0..$self->_last_index ])->each($code);
-}
-
-sub _last_index {
-    my $self = CORE::shift;
-    $self->length ? $self->length - 1 : 0;
-};
 
 sub concat {
     my ($self, $array) = @_;
@@ -197,12 +87,6 @@ sub _prepend_undestructive {
     $self->dup->unshift(@$array);
 }
 
-sub add {
-    my ($self, $array, $bool) = @_;
-    $bool ? $self->_prepend_undestructive($array)
-          : $self->_append_undestructive($array);
-}
-
 sub each {
     my ($self, $code) = @_;
     croak "Argument must be a code" unless ref $code eq 'CODE';
@@ -210,14 +94,12 @@ sub each {
     $self;
 }
 
-sub collect {
+sub map {
     my ($self, $code) = @_;
     croak "Argument must be a code" unless ref $code eq 'CODE';
     my @collected = CORE::map &$code, @{$self->dup};
     wantarray ? @collected : $self->new(\@collected);
 }
-
-*map = \&collect;
 
 sub grep {
     my ($self, $code) = @_;
@@ -249,34 +131,6 @@ sub find {
     return;
 }
 
-*detect = \&find;
-
-sub select {
-    my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
-    return $self unless $self->size;
-    my $last_index = $self->_last_index;
-    my $new = $self->dup;
-    for (0..$last_index) {
-        my $item = $new->shift;
-        local $_ = $item;
-        $new->push($item) if $code->($_);
-    }
-    return $new;
-}
-
-*find_all = \&select;
-
-sub index_of {
-    my ($self, $target) = @_;
-    my $code = (ref $target eq 'CODE') ? $target : sub { CORE::shift eq $target };
-
-    for (my $i = 0; $i < $self->length; $i++) {
-        $code->($self->[$i]) and return $i;
-    }
-    return;
-}
-
 sub sort {
     my ($self, $code) = @_;
     my @sorted = $code ? CORE::sort { $code->($a, $b) } @$self : CORE::sort @$self;
@@ -293,50 +147,20 @@ sub sort_by {
     wantarray ? @sorted : $self->new(\@sorted);
 }
 
-sub compact {
-    CORE::shift->grep(sub { defined  });
-}
-
 sub length {
     scalar @{$_[0]};
 }
 
 *size = \&length;
 
-sub flatten {
-    my $self = CORE::shift;
-    $self->collect(sub { _flatten($_)  });
-}
-
-sub _flatten {
-    my $element = CORE::shift;
-    (ref $element and ref $element eq 'ARRAY')
-        ? CORE::map { _flatten($_) } @$element
-        : $element;
-}
-
-sub is_empty {
-    !$_[0]->length;
-}
-
 sub uniq {
     my $self = CORE::shift;
     $self->new([ List::MoreUtils::uniq(@$self) ]);
 }
 
-sub reduce {
-    my ($self, $code) = @_;
-    croak "Argument must be a code" unless ref $code eq 'CODE';
-    List::Util::reduce { $code->($a, $b) } @$self;
-}
-
 sub to_a {
     my @unblessed = @{$_[0]};
     \@unblessed;
-}
-
-sub as_list { # for Template::Iterator
-    CORE::shift;
 }
 
 sub dup {
@@ -346,10 +170,6 @@ sub dup {
 sub reverse {
     my $self = CORE::shift;
     $self->new([ reverse @$self ]);
-}
-
-sub sum {
-    List::Util::sum @{$_[0]};
 }
 
 1;
