@@ -151,6 +151,31 @@ blessed by List::Ish, as a result of C<$code>.
   $list = List::Ish->new([1, 2, 3, 4]);
   $list->find(sub { ($_ % 2) == 0 }); #=> 2
 
+Be careful to use this method if the list can contain false values,
+such as C<undef>, zero, and the empty string.  Testing whether the
+C<find> method returns true or not is not equivalent to testing
+whether there is a value matching the specified condition or not in
+those cases.
+
+=item has ( I<$code> )
+
+Returns whether there is one or more list items that matches the
+specified condition or not.  The code reference specified as the
+argument is invoked with each item in the list, with the C<$_>
+variable set to the list item, until the code reference returns true.
+The code reference is expected to return whether the list item matches
+the desired condition or not.  The code reference may throw an
+exception, if desired.  Otherwise, the method return a boolean value,
+representing whether there is at least one item that matches the
+specified condition or not.
+
+Unlike the C<find> method, this method would return a true value if
+the code reference returns a true value, even if the list item was a
+false value.
+
+  $list = List::Ish->new([1, undef, 0, 10]);
+  ok $list->has(sub { defined $_ and $_ < 1 }); #=> true
+
 =item sort ( I<$code> )
 
 Sorts out each element and returns the result as a list or
@@ -176,6 +201,8 @@ List::Ish.
 
   $list = List::Ish->new([qw(1 2 3 4)]);
   $list->length; #=> 4
+
+This method is equivalent to C<scalar @{$list}> or C<length @{$list}>.
 
 =item size ()
 
