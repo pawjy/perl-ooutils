@@ -158,13 +158,6 @@ sub test_length_and_size : Tests(4) {
     }
 }
 
-sub test_uniq : Tests(3) {
-    my $list = list(1, 2, 3, 3, 4);
-    isa_ok $list->uniq, 'List::Ish';
-    is_deeply $list->uniq, [1, 2, 3, 4];
-    is_deeply $list->to_a, [1, 2, 3, 3, 4];
-}
-
 sub test_dup : Tests(3) {
     my $list = list(1, 2, 3);
     isnt $list, $list->dup;

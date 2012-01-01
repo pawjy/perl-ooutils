@@ -3,7 +3,6 @@ use strict;
 use warnings;
 our $VERSION = '0.04';
 use Carp qw/croak/;
-use List::MoreUtils ();
 
 sub new {
     my $class = shift;
@@ -130,11 +129,6 @@ sub length {
 }
 
 *size = \&length;
-
-sub uniq {
-    my $self = CORE::shift;
-    $self->new([ List::MoreUtils::uniq(@$self) ]);
-}
 
 sub to_a {
     my @unblessed = @{$_[0]};

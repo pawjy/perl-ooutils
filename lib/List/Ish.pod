@@ -207,14 +207,6 @@ This method is equivalent to C<scalar @{$list}> or C<length @{$list}>.
 
 An alias of C<length()> method described above.
 
-=item uniq ()
-
-Uniquifies the elements in C<$self>, a refernce to an array blessed by
-List::Ish, and returns the result.
-
-  $list = List::Ish->new([1, 2, 2, 3, 3, 4])
-  $list->uniq; #=> [1, 2, 3, 4]
-
 =item reverse ()
 
 Returns an reversely ordered C<$self>, a refernce to an array blessed
