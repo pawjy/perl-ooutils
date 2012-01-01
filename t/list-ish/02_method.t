@@ -141,10 +141,10 @@ sub test_sort : Tests(5) {
     is_deeply \@ret, [[3, 2, 1]];
 }
 
-sub test_length_and_size : Tests(4) {
+sub test_length_and_size : Test(4) {
     for my $method (qw/length size/) {
-        is list(1, 2, 3, 4)->size, 4;
-        is list()->size, 0;
+        is list(1, 2, 3, 4)->$method, 4;
+        is list()->$method, 0;
     }
 }
 
