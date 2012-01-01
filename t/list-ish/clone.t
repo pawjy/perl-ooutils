@@ -6,6 +6,7 @@ use lib file (__FILE__)->dir->parent->parent->subdir ('lib')->stringify;
 use Test::More;
 use base qw(Test::Class);
 use List::Ish;
+use JSON::XS;
 
 # ------ slice ------
 
@@ -93,6 +94,33 @@ sub _dup_subclass : Test(2) {
   isa_ok $l2, 'My::List::Ish::Subclass::Dup';
   is_deeply $l2, $l1;
 } # _dup_subclass
+
+# ------ to_list ------
+
+sub _to_list : Test(1) {
+  my $l = List::Ish->new ([1, 2, undef, 3]);
+  my @l = $l->to_list;
+  is_deeply \@l, [1, 2, undef, 3];
+} # _to_list
+
+sub _to_list_2 : Test(1) {
+  my $l = List::Ish->new ([undef]);
+  my @l = $l->to_list;
+  is_deeply \@l, [undef];
+} # _to_list_2
+
+sub _to_list_empty : Test(1) {
+  my $l = List::Ish->new ([]);
+  my @l = $l->to_list;
+  is_deeply \@l, [];
+} # _to_list_empty
+
+# ------ TO_JSON ------
+
+sub _to_json : Test(1) {
+  my $l = List::Ish->new (['abc', 123]);
+  is +JSON::XS->new->convert_blessed->encode ($l), '["abc",123]';
+} # _to_json
 
 __PACKAGE__->runtests;
 

@@ -7,6 +7,10 @@ use Test::More;
 use base qw(Test::Class);
 use List::Ish;
 
+sub _version : Test(1) {
+  ok $List::Ish::VERSION;
+} # _version
+
 sub _new_no_args : Test(2) {
   my $l = List::Ish->new;
   
@@ -107,26 +111,6 @@ sub _new_subclass_other : Test(2) {
   isa_ok $l2, 'My::List::Ish::Subclass::New::Other::2';
   is_deeply $l2, $l1;
 } # _new_subclass_other
-
-# ------ to_list ------
-
-sub _to_list : Test(1) {
-  my $l = List::Ish->new ([1, 2, undef, 3]);
-  my @l = $l->to_list;
-  is_deeply \@l, [1, 2, undef, 3];
-} # _to_list
-
-sub _to_list_2 : Test(1) {
-  my $l = List::Ish->new ([undef]);
-  my @l = $l->to_list;
-  is_deeply \@l, [undef];
-} # _to_list_2
-
-sub _to_list_empty : Test(1) {
-  my $l = List::Ish->new ([]);
-  my @l = $l->to_list;
-  is_deeply \@l, [];
-} # _to_list_empty
 
 __PACKAGE__->runtests;
 

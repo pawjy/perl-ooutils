@@ -145,6 +145,10 @@ sub to_list {
     return @{$_[0]};
 }
 
+sub TO_JSON {
+    return [@{$_[0]}];
+}
+
 sub clone {
     return bless [@{$_[0]}], ref $_[0];
 }
