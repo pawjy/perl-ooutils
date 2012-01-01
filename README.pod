@@ -8,6 +8,8 @@ perl-ooutils - Tiny object-oriented programming utilities for Perl
 
 =item * L<Class::Registry>
 
+=item * L<List::Ish>
+
 =item * L<Operation::Response>
 
 =back
