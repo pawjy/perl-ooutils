@@ -42,6 +42,42 @@ sub _slice_no_args : Test(6) {
   is $l2->length, 3;
 } # _slice_no_args
 
+# ------ clone ------
+
+sub _clone : Test(3) {
+  my $l1 = List::Ish->new ([1, 5, undef]);
+  my $l2 = $l1->clone;
+  isa_ok $l2, 'List::Ish';
+  is_deeply $l2, $l1;
+  isnt $l2, $l1;
+} # _clone
+
+sub _clone_empty : Test(3) {
+  my $l1 = List::Ish->new;
+  my $l2 = $l1->clone;
+  isa_ok $l2, 'List::Ish';
+  is_deeply $l2, $l1;
+  isnt $l2, $l1;
+} # _clone_empty
+
+# ------ dup ------
+
+sub _dup : Test(3) {
+  my $l1 = List::Ish->new ([1, 5, undef]);
+  my $l2 = $l1->dup;
+  isa_ok $l2, 'List::Ish';
+  is_deeply $l2, $l1;
+  isnt $l2, $l1;
+} # _dup
+
+sub _dup_empty : Test(3) {
+  my $l1 = List::Ish->new;
+  my $l2 = $l1->dup;
+  isa_ok $l2, 'List::Ish';
+  is_deeply $l2, $l1;
+  isnt $l2, $l1;
+} # _dup_empty
+
 __PACKAGE__->runtests;
 
 1;

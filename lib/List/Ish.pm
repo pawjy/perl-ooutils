@@ -41,8 +41,7 @@ sub last {
 }
 
 sub slice {
-    my $self = CORE::shift;
-    my ($start, $end) = @_;
+    my ($self, $start, $end) = @_;
     my $last = $#{$self};
     if (defined $end) {
         if ($start == 0 && $last <= $end) {
@@ -146,9 +145,11 @@ sub to_list {
     return @{$_[0]};
 }
 
-sub dup {
+sub clone {
     __PACKAGE__->new($_[0]->to_a);
 }
+
+*dup = \&clone;
 
 sub reverse {
     my $self = CORE::shift;
