@@ -8,6 +8,6 @@ dist: always
 	$(GENERATEPMPACKAGE) config/operation-response.pi dist/
 
 test:
-	prove t/*.t
+	prove t/*.t t/list-ish/*.t
 
 always:
