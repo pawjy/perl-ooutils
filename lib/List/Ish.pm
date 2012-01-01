@@ -8,6 +8,7 @@ use List::MoreUtils ();
 sub new {
     my $class = shift;
     $class = ref $class if ref $class;
+    return $_[0] if UNIVERSAL::isa($_[0], __PACKAGE__);
     return bless $_[0] || [], $class;
 }
 

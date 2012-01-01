@@ -39,6 +39,47 @@ sub _new_arrayref : Test(7) {
   is ref $arrayref, 'List::Ish';
 } # _new_arrayref
 
+sub _new_blessed : Test(4) {
+  my $l1 = List::Ish->new ([1, 2]);
+  
+  my $l2 = List::Ish->new ($l1);
+  isa_ok $l2, 'List::Ish';
+  is $l2, $l1;
+  is $l2->[0], 1;
+  is $l2->[1], 2;
+} # _new_blessed
+
+sub _new_rubyish : Test(4) {
+  my $l1 = bless [1, 2], 'List::Rubyish';
+  
+  my $l2 = List::Ish->new ($l1);
+  isa_ok $l2, 'List::Ish';
+  is $l2, $l1;
+  is $l2->[0], 1;
+  is $l2->[1], 2;
+} # _new_rubyish
+
+sub _new_moco_list : Test(4) {
+  my $l1 = bless [1, 2], 'DBIx::MoCo::List';
+  
+  my $l2 = List::Ish->new ($l1);
+  isa_ok $l2, 'List::Ish';
+  is $l2, $l1;
+  is $l2->[0], 1;
+  is $l2->[1], 2;
+} # _new_moco_list
+
+sub _new_moco_list_child : Test(4) {
+  local @My::DBIx::MoCo::List::ISA = qw(DBIx::MoCo::List);
+  my $l1 = bless [1, 2], 'My::DBIx::MoCo::List';
+  
+  my $l2 = List::Ish->new ($l1);
+  isa_ok $l2, 'List::Ish';
+  is $l2, $l1;
+  is $l2->[0], 1;
+  is $l2->[1], 2;
+} # _new_moco_list_child
+
 __PACKAGE__->runtests;
 
 1;
