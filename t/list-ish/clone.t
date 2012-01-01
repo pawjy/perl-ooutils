@@ -60,6 +60,14 @@ sub _clone_empty : Test(3) {
   isnt $l2, $l1;
 } # _clone_empty
 
+sub _clone_subclass : Test(2) {
+  local @My::List::Ish::Subclass::Clone::ISA = qw(List::Ish);
+  my $l1 = My::List::Ish::Subclass::Clone->new([1, 4, 10]);
+  my $l2 = $l1->clone;
+  isa_ok $l2, 'My::List::Ish::Subclass::Clone';
+  is_deeply $l2, $l1;
+} # _clone_subclass
+
 # ------ dup ------
 
 sub _dup : Test(3) {
@@ -77,6 +85,14 @@ sub _dup_empty : Test(3) {
   is_deeply $l2, $l1;
   isnt $l2, $l1;
 } # _dup_empty
+
+sub _dup_subclass : Test(2) {
+  local @My::List::Ish::Subclass::Dup::ISA = qw(List::Ish);
+  my $l1 = My::List::Ish::Subclass::Dup->new([1, 4, 10]);
+  my $l2 = $l1->dup;
+  isa_ok $l2, 'My::List::Ish::Subclass::Dup';
+  is_deeply $l2, $l1;
+} # _dup_subclass
 
 __PACKAGE__->runtests;
 

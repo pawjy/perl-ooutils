@@ -8,7 +8,7 @@ use List::MoreUtils ();
 sub new {
     my $class = shift;
     $class = ref $class if ref $class;
-    return $_[0] if UNIVERSAL::isa($_[0], __PACKAGE__);
+    return $_[0] if UNIVERSAL::isa($_[0], $class);
     return bless $_[0] || [], $class;
 }
 
@@ -146,7 +146,7 @@ sub to_list {
 }
 
 sub clone {
-    __PACKAGE__->new($_[0]->to_a);
+    return bless [@{$_[0]}], ref $_[0];
 }
 
 *dup = \&clone;

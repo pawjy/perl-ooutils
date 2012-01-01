@@ -29,9 +29,8 @@ array) as an object.
 =item $list = List::Ish->new ([$item1, $item2, ...])
 
 Construct a list object.  The argument to the C<new> method must be an
-array reference or a L<List::Ish> object.  If it is an array
-reference, it is blessed with the class.  If it is already blessed
-with the class, it is returned as is.
+array reference.  The reference is blessed by the L<List::Ish> class
+(or its subclass), even if it has been blessed by another class.
 
 =back
 
