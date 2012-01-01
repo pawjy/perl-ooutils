@@ -82,8 +82,8 @@ sub each : Tests(3) {
     is_deeply $ret->to_a, [qw/foo bar baz/];
 }
 
-sub test_concat_and_append : Tests(10) {
-    for my $method (qw/concat append/) {
+sub test_concat_and_append : Test(5) {
+    for my $method (qw/append/) {
         my $list = list(qw/foo bar baz/);
         $list->$method(['foo']);
         is @$list, 4;
@@ -92,10 +92,6 @@ sub test_concat_and_append : Tests(10) {
         is @$list, 6;
         is $list->[5], 'bar';
         isa_ok $list->$method(['hoge']), 'List::Ish';
-
-#         $list->$method('baz');
-#         is @$list, 7;
-#         is $list->[6], 'baz';
     }
 }
 
@@ -196,7 +192,7 @@ sub test_slice : Tests(12) {
     is_deeply $list->slice->to_a, [0, 1, 2];
 }
 
-sub test_find_and_detect : Test(12) {
+sub test_find_and_detect : Test(4) {
     my $list = list(1, 2, 3);
 
     for my $method (qw/find/) {
@@ -204,16 +200,6 @@ sub test_find_and_detect : Test(12) {
         is $list->$method(sub { $_ == 2 }), 2;
         is $list->$method(sub { $_ == 3 }), 3;
         is $list->$method(sub { $_ == 4 }), undef;
-
-        is $list->$method(1), 1;
-        is $list->$method(2), 2;
-        is $list->$method(3), 3;
-        is $list->$method(4), undef;
-
-        is $list->$method(+{ kyururi => 1 }), undef;
-        is $list->$method(+{ kyururi => 2 }), undef;
-        is $list->$method(+{ kyururi => 3 }), undef;
-        is $list->$method(+{ kyururi => 4 }), undef;
     }
 }
 
@@ -222,23 +208,14 @@ sub test_reverse : Tests(1) {
     is_deeply [3, 2, 1, 0], $list->reverse->to_a;
 }
 
-sub test_some_method_argument_in_not_a_code : Test(2) {
+sub test_some_method_argument_in_not_a_code : Test(4) {
     my $obj = List::Ish->new;
 
-    for my $method (qw/each map/) {
+    for my $method (qw/each map grep find/) {
         local $@;
         eval { $obj->$method( +{} ) };
-        like $@, qr/Argument must be a code/, $method;
+        ok $@;
     }
-}
-
-sub test_grep_argment_error : Tests(2) {
-    my $obj = List::Ish->new;
-
-    ok !$obj->grep;
-    local $@;
-    eval { $obj->grep(+{}) };
-    like $@, qr/Invalid code/;
 }
 
 1;

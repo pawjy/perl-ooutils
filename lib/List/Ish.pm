@@ -63,28 +63,16 @@ sub join {
     join $delimiter, @$self;
 }
 
-sub concat {
+sub append {
     my ($self, $array) = @_;
     $self->push(@$array);
     $self;
 }
 
-*append = \&concat;
-
 sub prepend {
     my ($self, $array) = @_;
     $self->unshift(@$array);
     $self;
-}
-
-sub _append_undestructive {
-    my ($self, $array) = @_;
-    $self->dup->push(@$array);
-}
-
-sub _prepend_undestructive {
-    my ($self, $array) = @_;
-    $self->dup->unshift(@$array);
 }
 
 sub each {
@@ -103,30 +91,14 @@ sub map {
 
 sub grep {
     my ($self, $code) = @_;
-    $code or return;
-    my @grepped;
-    if (!ref($code)) {
-        for (@$self) {
-            if (ref($_) eq 'HASH') {
-                CORE::push @grepped, $_ if $_->{$code};
-            } else {
-                CORE::push @grepped, $_ if $_->$code;
-            }
-        }
-    } elsif (ref $code eq 'CODE') {
-        @grepped = CORE::grep &$code, @$self;
-    } else {
-        croak "Invalid code";
-    }
+    croak "Argument must be a code" unless ref $code eq 'CODE';
+    my @grepped = CORE::grep &$code, @$self;
     wantarray ? @grepped : $self->new(\@grepped);
 }
 
 sub find {
-    my ($self, $cond) = @_;
-    my $code = (ref $cond and ref $cond eq 'CODE')
-        ? $cond
-        : sub { $_ eq $cond };
-
+    my ($self, $code) = @_;
+    croak "Argument must be a code" unless ref $code eq 'CODE';
     for (@$self) { &$code and return $_ }
     return;
 }
