@@ -80,6 +80,24 @@ sub _new_moco_list_child : Test(4) {
   is $l2->[1], 2;
 } # _new_moco_list_child
 
+sub _to_list : Test(1) {
+  my $l = List::Ish->new ([1, 2, undef, 3]);
+  my @l = $l->to_list;
+  is_deeply \@l, [1, 2, undef, 3];
+} # _to_list
+
+sub _to_list_2 : Test(1) {
+  my $l = List::Ish->new ([undef]);
+  my @l = $l->to_list;
+  is_deeply \@l, [undef];
+} # _to_list_2
+
+sub _to_list_empty : Test(1) {
+  my $l = List::Ish->new ([]);
+  my @l = $l->to_list;
+  is_deeply \@l, [];
+} # _to_list_empty
+
 __PACKAGE__->runtests;
 
 1;

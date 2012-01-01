@@ -229,6 +229,25 @@ by List::Ish.
 Returns a duplicated C<$self>, a refernce to an array blessed by
 List::Ish.
 
+=item to_a ()
+
+Returns a duplication of the list, without blessing.  In other word,
+the method returns an array reference that contains the items of the
+list, in the same order.
+
+  $arrayref = $list->to_a;
+  is ref $arrayref, 'ARRAY';
+
+=item to_list ()
+
+Returns a Perl list containing the items of the list, in the same
+order.
+
+  @list = $list->to_list;
+
+This method is equivalent to the C<@$list> operation in the list
+context.
+
 =back
 
 =head1 HISTORY

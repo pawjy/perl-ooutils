@@ -142,6 +142,10 @@ sub to_a {
     \@unblessed;
 }
 
+sub to_list {
+    return @{$_[0]};
+}
+
 sub dup {
     __PACKAGE__->new($_[0]->to_a);
 }
