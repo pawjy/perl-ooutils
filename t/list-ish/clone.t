@@ -122,6 +122,21 @@ sub _to_json : Test(1) {
   is +JSON::XS->new->convert_blessed->encode ($l), '["abc",123]';
 } # _to_json
 
+# ------ as_hashref ------
+
+sub _as_hashref : Test(2) {
+  my $l = List::Ish->new (['abc', 124]);
+  is_deeply $l->as_hashref, {abc => 1, 124 => 1};
+} # _as_hashref
+
+sub _as_hashref_2 : Test(4) {
+  my $l = List::Ish->new ([0, List::Ish->new]);
+  is ref $l->as_hashref, 'HASH';
+  ok $l->as_hashref->{0};
+  ok grep { /List::Ish/ } keys %{$l->as_hashref};
+  isnt $l->as_hashref, $l->as_hashref;
+} # _as_hashref_2
+
 __PACKAGE__->runtests;
 
 1;

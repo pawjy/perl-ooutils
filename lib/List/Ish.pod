@@ -251,6 +251,16 @@ order.
 This method is equivalent to the C<@$list> operation in the list
 context.
 
+=item as_hashref ()
+
+Returns a hash reference that contains key/value pairs where the keys
+are the stringified representations of the items in the list and the
+values are C<1>.
+
+  $list = List::Ish->new([1, 2, 3]);
+  $hashref = $list->as_hashref;
+  eq_or_diff [sort keys %$hashref], [1, 2, 3];
+
 =back
 
 =head1 HISTORY

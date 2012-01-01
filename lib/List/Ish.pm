@@ -155,6 +155,10 @@ sub clone {
 
 *dup = \&clone;
 
+sub as_hashref {
+    return {map { $_ => 1 } @{$_[0]}};
+}
+
 sub reverse {
     my $self = CORE::shift;
     $self->new([ reverse @$self ]);
