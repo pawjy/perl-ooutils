@@ -1,7 +1,6 @@
-
 =head1 NAME
 
-List::Rubyish - Array iterator like the Ruby
+List::Ish - List object
 
 =head1 SYNOPSIS
 
@@ -9,50 +8,72 @@ List::Rubyish - Array iterator like the Ruby
     {name => 'jkondo'},
     {name => 'cinnamon'}
   ];
-  my $list = List::Rubyish->new($array_ref);
+  my $list = List::Ish->new($array_ref);
 
-  $list->size;              #=> 2
+  $list->length;            #=> 2
   my $first = $list->shift; #=> {name => 'jkondo'}
   $list->push($first);      #=> [{name => 'cinnamon'}, {name => 'jkondo'}];
 
-  # List::Rubyish provides much more useful methods. For more
+  # List::Ish provides much more useful methods. For more
   # details, see the sections below.
 
-=head1 OVERVIEW
+=head1 DESCRIPTION
 
-L<DBIx::MoCo::List> is very useful, However installation is complex.
+The C<List::Ish> module provides a class for handling a list (or
+array) as an object.
 
-List::Rubyish was made in order to enable use of L<DBIx::MoCo::List> independently.
-
-=head1 METHODS
+=head1 CONSTRUCTOR
 
 =over 4
 
-=item dump ()
+=item $list = List::Ish->new ([$item1, $item2, ...])
 
-Dump the content of C<$self> using L<Data::Dumper>.
+Construct a list object.  The argument to the C<new> method must be an
+array reference or a L<List::Ish> object.  If it is an array
+reference, it is blessed with the class.  If it is already blessed
+with the class, it is returned as is.
+
+=back
+
+=head1 @{}
+
+Since a L<List::Ish> object is just a blessed array reference, you can
+treat is as an array reference in most cases, like:
+
+  my $list = List::Ish->new ([...]);
+  for (@$list) {
+    ...
+  }
+  warn $list->[2];
+
+=head1 CLASS METHODS
+
+In addition to just treating the list object as an array reference,
+following methods are available to the list object:
+
+=over 4
 
 =item push ( I<@array> )
 
 =item unshift ( I<@array> )
 
 Sets the argument into C<$self>, a refernce to an array blessed by
-List::Rubyish, like the same name functions provided by Perl core,
-then returns a List::Rubyish object.
+List::Ish, like the same name functions provided by Perl core,
+then returns a List::Ish object.
 
-  my $list = List::Rubyish->new([qw(1 2 3)]);
+  my $list = List::Ish->new([qw(1 2 3)]);
   $list->push(4, 5); #=> [1, 2, 3, 4, 5]
   $list->unshift(0); #=> [0, 1, 2, 3, 4, 5]
 
-=item concat ( I<\@array> )
+=item append ( I<\@array> )
 
 =item prepend ( I<\@array> )
 
 They're almost the same as C<push()>/C<unshift()> described above
 except that the argument shoud be a reference to an array.
 
-  my $list = List::Rubyish->new([1, 2, 3]);
-  $list->concat([4, 5]); #=> [1, 2, 3, 4, 5]
+  my $list = List::Ish->new([1, 2, 3]);
+  $list->append([4, 5]); #=> [1, 2, 3, 4, 5]
   $list->prepend([0]);   #=> [0, 1, 2, 3, 4, 5]
 
 =item shift ()
@@ -60,10 +81,10 @@ except that the argument shoud be a reference to an array.
 =item pop ()
 
 Pulls out the first/last element from C<$self>, a refernce to an array
-blessed by List::Rubyish, then returns it like the same name
+blessed by List::Ish, then returns it like the same name
 functions in Perl core.
 
-  $list = List::Rubyish->new([1, 2, 3]);
+  $list = List::Ish->new([1, 2, 3]);
   $list->shift; #=> 1
   $list->pop;   #=> 3
   $list->dump   #=> [2]
@@ -73,10 +94,10 @@ functions in Perl core.
 =item last ()
 
 Returns the first/last element of C<$self>, a refernce to an array
-blessed by List::Rubyish. These methods aren't destructive contrary
+blessed by List::Ish. These methods aren't destructive contrary
 to C<shift()>/C<pop()> method.
 
-  $list = List::Rubyish->new([1, 2, 3]);
+  $list = List::Ish->new([1, 2, 3]);
   $list->first; #=> 1
   $list->last;  #=> 3
   $list->dump   #=> [1, 2, 3]
@@ -84,258 +105,147 @@ to C<shift()>/C<pop()> method.
 =item slice ( I<$start>, I<$end> )
 
 Returns the elements whose indexes are between C<$start> and C<$end>
-as a List::Rubyish object.
+as a List::Ish object.
 
-  $list = List::Rubyish->new([qw(1 2 3 4)]);
+  $list = List::Ish->new([qw(1 2 3 4)]);
   $list->slice(1, 2) #=> [2, 3]
-
-=item zip ( I<\@array1>, I<\@array2>, ... )
-
-Bundles up the elements in each arguments into an array or a
-List::Rubyish object along with the context.
-
-  my $list = List::Rubyish->new([1, 2, 3]);
-  $list->zip([4, 5, 6], [7, 8, 9]);
-      #=> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
-
-  # When the numbers of each list are different...
-  $list = List::Rubyish->new([1, 2, 3]);
-  $list->zip([4, 5], [7, 8, 9]);
-      #=> [[1, 4, 7], [2, 5, 8], [3, undef, 9]]
-
-  my $list   = List::Rubyish->new([1, 2]);
-  $list->zip([4, 5], [7, 8, 9]);
-      #=> [[1, 4, 7], [2, 5, 8]]
-
-=item delete ( I<$value>, I<$code> )
-
-Deletes the same values as C<$value> in C<$self>, a refernce to an
-array blessed by List::Rubyish, and returns the value if found. If
-the value is not found in C<$self> and C<$code> is passed in, the code
-is executed using the value as an argument to find the value to be
-deleted.
-
-  $list = List::Rubyish->new([1, 2, 3, 2, 1]);
-  $list->delete(2); #=> 2
-  $list->dump       #=> [1, 3, 1]
-
-=item delete_at ( I<$pos> )
-
-Deletes the element at C<$pos> and returns it.
-
-  $list = List::Rubyish->new([1, 2, 3, 2, 1]);
-  $list->delete_at(3); #=> 2
-  $list->dump          #=> [1, 2, 3, 1]
-
-=item delete_if ( I<$code> )
-
-Deletes the elements if C<$code> returns true value with each element
-as an argument.
-
-  $list = List::Rubyish->new([1, 2, 3, 4]);
-  $list->delete_if(sub { ($_ % 2) == 0) });
-  $list->dump #=> [1, 3]
-
-=item inject ( I<$result>, I<$code> )
-
-Executes folding calculation using C<$code> through each element and
-returns the result.
-
-  $list = List::Rubyish->new([1, 2, 3, 4]);
-  $list->inject(0, sub { $_[0] + $_[1] }); #=> 10
 
 =item join ( I<$delimiter> )
 
 Joins all the elements by C<$delimiter>.
 
-  $list = List::Rubyish->new([0 1 2 3]);
+  $list = List::Ish->new([0 1 2 3]);
   $list->join(', ') #=> '0, 1, 2, 3'
-
-=item each_index ( I<$code> )
-
-Executes C<$code> with each index of C<$self>, a refernce to an array
-blessed by List::Rubyish.
-
-  $list = List::Rubyish->new([1, 2, 3]);
-  $list->each_index(sub { do_something($_) });
 
 =item each ( I<$code> )
 
 Executes C<$code> with each value of C<$self>, a refernce to an array
-blessed by List::Rubyish.
+blessed by List::Ish.
 
-  $list = List::Rubyish->new([1, 2, 3]);
+  $list = List::Ish->new([1, 2, 3]);
   $list->each(sub { do_something($_) });
-
-=item collect ( I<$code> )
-
-Executes C<$code> with each element of C<$self>, a refernce to an
-array blessed by List::Rubyish using CORE::map() and returns the
-results as a list or List::Rubyish object along with the context.
-
-  $list = List::Rubyish->new([1, 2, 3]);
-  $list->map(sub { $_ * 2 }); #=> [2, 4, 6]
 
 =item map ( I<$code> )
 
-An alias of C<collect()> method described above.
+Executes C<$code> with each element of C<$self>, a refernce to an
+array blessed by List::Ish using CORE::map() and returns the
+results as a list or List::Ish object along with the context.
+
+  $list = List::Ish->new([1, 2, 3]);
+  $list->map(sub { $_ * 2 }); #=> [2, 4, 6]
 
 =item grep ( I<$code> )
 
 Executes C<$code> with each element of C<$self>, a refernce to an
-array blessed by List::Rubyish using CORE::grep() and returns the
-results as a list or List::Rubyish object along with the context.
+array blessed by List::Ish using CORE::grep() and returns the
+results as a list or List::Ish object along with the context.
 
-  $list = List::Rubyish->new([qw(1 2 3 4)]);
+  $list = List::Ish->new([qw(1 2 3 4)]);
   $list->grep(sub { ($_ % 2) == 0 }); #=> [2, 4]
 
 =item find ( I<$code> )
 
 Returns the first value found in C<$self>, a refernce to an array
-blessed by List::Rubyish, as a result of C<$code>..
+blessed by List::Ish, as a result of C<$code>.
 
-  $list = List::Rubyish->new([1, 2, 3, 4]);
+  $list = List::Ish->new([1, 2, 3, 4]);
   $list->find(sub { ($_ % 2) == 0 }); #=> 2
-
-=item select ( I<$code> )
-
-Returns the values found in C<$self>, a refernce to an array
-blessed by List::Rubyish, as a result of C<$code>..
-
-  $list = List::Rubyish->new([1, 2, 3, 4]);
-  $list->select(sub { ($_ % 2) == 0 }); #=> 2, 4
-
-=item index_of ( I<$arg> )
-
-Returns index of given target or given code returns true.
-
-  $list = List::Rubyish->new([qw(foo bar baz)]);
-  $list->index_of('bar');                  #=> 1
-  $list->index_of(sub { shift eq 'bar' }); #=> 1
 
 =item sort ( I<$code> )
 
 Sorts out each element and returns the result as a list or
-List::Rubyish object along with the context.
+List::Ish object along with the context.
 
-  $list = List::Rubyish->new([qw(3 2 4 1]);
+  $list = List::Ish->new([qw(3 2 4 1]);
   $list->sort;                          #=> [1, 2, 3, 4]
   $list->sort(sub { $_[1] <=> $_[0] }); #=> [4, 3, 2, 1]
 
 =item sort_by ( I<$code>, I<$cmp> )
 
-Sorts out each element with Schwartzian transform returns the result as a list or
-List::Rubyish object along with the context.
+Sorts out each element with Schwartzian transform returns the result
+as a list or List::Ish object along with the context.
 
-  $list = List::Rubyish->new([ [3], [2], [4], [1]]);
+  $list = List::Ish->new([ [3], [2], [4], [1]]);
   $list->sort_by(sub { $_->[0] }); #=> [[1], [2], [3], [4]]
   $list->sort_by(sub { $_->[0] }, sub { $_[1} <=> $_[0] } ); #=> [[4], [3], [2], [1]]
-
-=item compact ()
-
-Eliminates undefined values in C<$self>, a refernce to an array
-blessed by List::Rubyish.
-
-  $list = List::Rubyish->new([1, 2, undef, 3, undef, 4]);
-  $list->compact; #=> [1, 2, 3, 4]
 
 =item length ()
 
 Returns the length of C<$self>, a refernce to an array blessed by
-List::Rubyish.
+List::Ish.
 
-  $list = List::Rubyish->new([qw(1 2 3 4)]);
+  $list = List::Ish->new([qw(1 2 3 4)]);
   $list->length; #=> 4
 
 =item size ()
 
 An alias of C<length()> method described above.
 
-=item flatten ()
-
-Returns a list or List::Rubyish object which is recursively
-flattened out.
-
-  $list = List::Rubyish->new([1, [2, 3, [4], 5]]);
-  $list->flattern; #=> [1, 2, 3, 4, 5]
-
-=item is_empty ()
-
-Returns true if C<$self>, a refernce to an array blessed by
-List::Rubyish, is empty.
-
 =item uniq ()
 
 Uniquifies the elements in C<$self>, a refernce to an array blessed by
-List::Rubyish, and returns the result.
+List::Ish, and returns the result.
 
-  $list = List::Rubyish->new([1, 2, 2, 3, 3, 4])
+  $list = List::Ish->new([1, 2, 2, 3, 3, 4])
   $list->uniq; #=> [1, 2, 3, 4]
-
-=item reduce ( I<$code> )
-
-Reduces the list by C<$code>.
-
-  # finds the maximum value
-  $list = List::Rubyish->new([4, 1, 3, 2])
-  $list->reduce(sub { $_[0] > $_[1] ? $_[0] : $_[1] }); #=> 4
-
-See L<List::Util> to get to know about details of C<reduce()>.
 
 =item reverse ()
 
 Returns an reversely ordered C<$self>, a refernce to an array blessed
-by List::Rubyish.
+by List::Ish.
 
-  $list = List::Rubyish->new([4, 1, 3, 2])
+  $list = List::Ish->new([4, 1, 3, 2])
   $list->reverse; #=> [2, 3, 1, 4]
 
 =item dup ()
 
 Returns a duplicated C<$self>, a refernce to an array blessed by
-List::Rubyish.
-
-=item sum ()
-
-Returns the sum of each element in C<$self>, a refernce to an array
-blessed by List::Rubyish.
-
-  $list = List::Rubyish->new([1, 2, 3, 4]);
-  $list->sum; #=> 10
+List::Ish.
 
 =back
 
-=head1 SEE ALSO
+=head1 HISTORY
 
-L<DBIx::MoCo::List>, L<List::Util>, L<List::MoreUtils>, L<http://github.com/naoya/list-rubylike>, L<http://d.hatena.ne.jp/naoya/20080419/1208579525>, L<http://www.ruby-lang.org/ja/man/html/Enumerable.html>
+=over 4
+
+=item 0.04 (2012-01-01)
+
+First revision.
+
+=back
+
+=head1 ACKNOWLEDGEMENTS
+
+The L<List::Ish> module derived from L<List::Rubyish>, which is
+available at
+<http://svn.coderepos.org/share/lang/perl/List-Rubyish/trunk> or
+<http://search.cpan.org/dist/List-Rubyish/>.
+
+The L<List::Rubyish> module is inspired by, or in fact derived from,
+various list-related modules, including: L<DBIx::MoCo::List>,
+L<List::Util>, L<List::MoreUtils>,
+L<http://github.com/naoya/list-rubylike>,
+L<http://d.hatena.ne.jp/naoya/20080419/1208579525>, and
+L<http://www.ruby-lang.org/ja/man/html/Enumerable.html>.
+
+Authors of L<List::Rubyish> are: Junya Kondo,
+E<lt>jkondo@hatena.comE<gt>, Naoya Ito, E<lt>naoya@hatena.ne.jpE<gt>,
+Kentaro Kuribayashi, E<lt>kentarok@gmail.comE<gt>, Yuichi Tateno,
+E<lt>secondlife at hatena ne jp<gt>, and Kazuhiro Osawa E<lt>yappo
+<at> shibuya <döt> plE<gt>.  They acknowledge naoya, kentaro,
+tokuhirom, kan, and lopnor for their contributions.
 
 =head1 AUTHOR
 
-Junya Kondo, E<lt>jkondo@hatena.comE<gt>,
-Naoya Ito, E<lt>naoya@hatena.ne.jpE<gt>,
-Kentaro Kuribayashi, E<lt>kentarok@gmail.comE<gt>,
-Yuichi Tateno, E<lt>secondlife at hatena ne jp<gt>,
-
-Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
-
-=head2 thanks to
-
-naoya, kentaro, tokuhirom, kan, lopnor
-
-=head1 REPOSITORY
-
-  svn co http://svn.coderepos.org/share/lang/perl/List-Rubyish/trunk List-Rubyish
-
-List::Rubyish is Subversion repository is hosted at L<http://coderepos.org/share/>.
-patches and collaborators are welcome.
+Wakaba <w@suika.fam.cx>.
 
 =head1 LICENSE
 
+Copyright (C) Hatena Inc. All Rights Reserved.
+
+Copyright 2012 Wakaba <w@suika.fam.cx>.
+
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-=head1 DBIx::MoCo::List's COPYRIGHT
-
-Copyright (C) Hatena Inc. All  Rights  Reserved.
 
 =cut
