@@ -7,6 +7,8 @@ use Exporter::Lite;
 use List::Rubyish;
 use Data::Dumper;
 
+our $GlobalCategoryCode ||= 9999_000_000;
+
 __PACKAGE__->mk_classdata(category_name => undef);
 __PACKAGE__->mk_classdata(category_code => undef);
 __PACKAGE__->mk_classdata(error_codes => undef);
@@ -31,7 +33,7 @@ sub define_error {
     my $class = shift;
     my $type = uc shift;
     my $code = shift;
-    $code += $class->category_code + 8107_000_000;
+    $code += $class->category_code + $GlobalCategoryCode;
     my $msgid = sprintf 'response.%s.%s', $class->category_name, lc $type;
     
     $class->error_codes({}) unless $class->error_codes;
