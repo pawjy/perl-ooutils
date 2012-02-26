@@ -3,6 +3,8 @@ use strict;
 use warnings;
 our $VERSION = '0.04';
 
+$Test::MoreMore::ListClass{+__PACKAGE__} = 1;
+
 sub new {
     my $class = shift;
     $class = ref $class if ref $class;
