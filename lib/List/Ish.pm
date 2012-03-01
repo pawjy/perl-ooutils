@@ -145,6 +145,12 @@ sub to_list {
     return @{$_[0]};
 }
 
+# For compatibility with Template::Iterator in Template Toolkit.
+# Don't use for any ohter purpose.
+sub as_list {
+    return $_[0];
+}
+
 sub TO_JSON {
     return [@{$_[0]}];
 }
