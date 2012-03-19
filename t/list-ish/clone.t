@@ -115,6 +115,11 @@ sub _to_list_empty : Test(1) {
   is_deeply \@l, [];
 } # _to_list_empty
 
+sub _as_list : Test(1) {
+    my $l = List::Ish->new;
+    is $l->as_list, $l;
+}
+
 # ------ TO_JSON ------
 
 sub _to_json : Test(1) {
