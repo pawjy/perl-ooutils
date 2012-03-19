@@ -1,0 +1,8 @@
+Carp
+Data::Dumper
+Exporter::Lite
+List::Rubyish
+Path::Class
+Test::Class
+Test::More
+UNIVERSAL::require
