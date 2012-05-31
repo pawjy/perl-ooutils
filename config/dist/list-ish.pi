@@ -19,5 +19,8 @@
         git => {
             GitHub => q<https://github.com/wakaba/perl-ooutils>,
         },
+        ci => {
+            "Travis CI" => q<http://travis-ci.org/wakaba/perl-ooutils>,
+        },
     },
 };
