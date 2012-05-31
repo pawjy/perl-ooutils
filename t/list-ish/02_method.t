@@ -191,14 +191,4 @@ sub test_reverse : Tests(1) {
     is_deeply [3, 2, 1, 0], $list->reverse->to_a;
 }
 
-sub test_some_method_argument_in_not_a_code : Test(4) {
-    my $obj = List::Ish->new;
-
-    for my $method (qw/each map grep find/) {
-        local $@;
-        eval { $obj->$method( +{} ) };
-        ok $@;
-    }
-}
-
 1;
