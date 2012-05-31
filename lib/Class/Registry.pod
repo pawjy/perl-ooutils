@@ -65,6 +65,9 @@ Returns a list of the registered keys.
 The latest version of this module would be available at:
 <https://github.com/wakaba/perl-ooutils>.
 
+Snapshot (i.e. outdated) tarballs for the module might be available
+from <http://wakaba.github.com/packages/perl/#Class-Registry>.
+
 =head1 HISTORY
 
 This module was originally developed as part of the Hatena Message
@@ -75,6 +78,10 @@ This module was originally developed as part of the Hatena Message
 =item 1.0 (2011-07-13)
 
 First released version.
+
+=item 2.0 (2012-05-31)
+
+Removed L<UNIVERSAL::require> dependency.
 
 =back
 
@@ -88,7 +95,7 @@ Thanks to id:shiba_yu36 and id:motemen for their important advices.
 
 =head1 LICENSE
 
-Copyright 2009-2011 Hatena <http://www.hatena.ne.jp/>.
+Copyright 2009-2012 Hatena <http://www.hatena.ne.jp/>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

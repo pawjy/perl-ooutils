@@ -285,7 +285,7 @@ The latest version of this module is available at
 <https://github.com/wakaba/perl-ooutils/blob/master/lib/List/Ish.pm>.
 
 An outdated copy of this module might be available as a tarball
-package from <http://wakaba.github.com/packages/#perl-list-ish>,
+package from <http://wakaba.github.com/packages/perl/#List-Ish>,
 though use of the latest version available from the Git repository is
 always preferred.
 

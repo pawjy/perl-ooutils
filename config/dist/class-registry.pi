@@ -8,11 +8,15 @@
     )],
     req_modules => {
         'Carp' => 0,
-        'UNIVERSAL::require' => 0,
     },
     t_req_modules => {
         'Path::Class' => 0,
         'Test::More' => 0,
         'Test::Class' => 0,
+    },
+    urls => {
+        git => {
+            GitHub => q<https://github.com/wakaba/perl-ooutils>,
+        },
     },
 };
