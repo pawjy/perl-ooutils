@@ -49,16 +49,63 @@ when the name I<$key> is not registered yet.
 Returns the package name registered for the short name I<$key>, if
 any, or false otherwise.
 
-=item $package = Class::Registry->default($key)
+=item $package = Class::Registry->require($key)
 
 Returns the package name registered for the short name I<$key>, if
 any, or dies otherwise.  The package is C<require>d before returned.
+
+=item $package = Class::Registry->load($key)
+
+Returns the package name registered for the name I<$key>, if any, or
+I<$key> itself, otherwise.  The package is C<require>d before
+returned.  It is expected that I<$key> is the default package name,
+which can be replaced by some subclass package name.
 
 =item @keys = Class::Registry->keys
 
 Returns a list of the registered keys.
 
 =back
+
+=head1 RECOMMENDED PRACTICE FOR KEY NAMING
+
+There is no official naming rule for the I<$key> argument forced by
+the module.  However, following convention is recommended:
+
+=over 4
+
+=item Use short lowercase name for project-specifc frequently used classes.
+
+Examples: C<user>, C<spot>, C<message>, C<haikutarget>, C<cococoin>.
+
+=item Use package name for modules or rarely used classes.
+
+Examples: C<Karasuma::Pager::Simple>, C<MyApp::Object::User::ViewHistory>.
+
+=back
+
+Package name based key, combining with the C<load> method, would be
+useful when a module can be extended for specific application as
+subclass.  Consider the following example:
+
+  package MyUsefulModule;
+  sub some_useful_method { ... }
+
+... and the module is subclassed for my application as:
+
+  package MyApp::MyUsefulModule;
+  push @ISA, qw(MyUsefulMethod);
+  sub some_useful_method { ... }
+
+Invocation for the method would look like:
+
+  Class::Registry->load('MyUsefulModule')->some_useful_method;
+
+By default, the method of the base (C<MyUsefulModule>) class is
+executed.  This default can be overridden by setting the subclass name
+before the C<load> method invocation:
+
+  Class::Registry->set(MyUsefulModule => 'MyApp::MyUsefulMethod');
 
 =head1 DISTRIBUTION
 
@@ -82,6 +129,10 @@ First released version.
 =item 2.0 (2012-05-31)
 
 Removed L<UNIVERSAL::require> dependency.
+
+=item 3.0 (2012-06-22)
+
+Added C<load> method.
 
 =back
 

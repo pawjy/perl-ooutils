@@ -71,6 +71,34 @@ sub _require_not_found_2 : Test(1) {
     };
 }
 
+sub _load_not_found : Test(1) {
+    eval {
+        Class::Registry->load('test::Class::Not::Found');
+        ok 0;
+    } or do {
+        ok $@;
+    };
+}
+
+sub _load_require_as_is : Test(1) {
+    {
+        package test::Class::Registry::load::1;
+        $INC{'test/Class/Registry/load/1.pm'} = 1;
+        sub hoge { 123 }
+    }
+    is +Class::Registry->load('test::Class::Registry::load::1')->hoge, 123;
+}
+
+sub _load_require_class_specified : Test(1) {
+    {
+        package test::Class::Registry::load::2::fuga;
+        $INC{'test/Class/Registry/load/2/fuga.pm'} = 1;
+        sub hoge { 521 }
+    }
+    Class::Registry->set('test::Class::Registry::load::2' => 'test::Class::Registry::load::2::fuga');
+    is +Class::Registry->load('test::Class::Registry::load::2')->hoge, 521;
+}
+
 __PACKAGE__->runtests;
 
 1;

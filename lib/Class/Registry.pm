@@ -1,7 +1,7 @@
 package Class::Registry;
 use strict;
 use warnings;
-our $VERSION = '2.0';
+our $VERSION = '3.0';
 use Carp;
 
 my $defs = {};
@@ -28,6 +28,15 @@ sub require {
     my ($class, $key) = @_;
     
     my $class_name = $defs->{$key} or die "$key: not defined", Carp::longmess;
+    eval qq{ require $class_name } or die "$key: $@";
+    
+    return $class_name;
+}
+
+sub load {
+    my ($class, $key) = @_;
+    
+    my $class_name = $defs->{$key} || $key;
     eval qq{ require $class_name } or die "$key: $@";
     
     return $class_name;
