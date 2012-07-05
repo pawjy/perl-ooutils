@@ -1,0 +1,75 @@
+=head1 NAME
+
+Object::CachesMethod - The ":Caches" code attribute for instance caching
+
+=head1 SYNOPSIS
+
+  package MyObject;
+  use base qw(Object::CachesMethod);
+  
+  sub hoge : Caches {
+      my $self = shift;
+      if (@_) {
+          $self->{fuga} = shift;
+      }
+      if ($self->{fuga}) {
+          return $self->{fuga};
+      } else {
+          return rand;
+      }
+  }
+  
+  __PACKAGE__->cache_methods;
+  
+  package main;
+  
+  $v1 = $myobject->hoge;
+  $v2 = $myobject->hoge;
+  is $v2, $v1;
+  
+  $myobject->flush_cached_methods;
+  
+  $v3 = $myobject->hoge;
+  isnt $v3, $v1;
+  
+  $myobject->hoge(180);
+  is $myobject->hoge, 180;
+
+=head1 DESCRIPTION
+
+The C<Object::CachesMethods> class, when used as a supercalss of some
+object calss, enables the C<: Caches> code attribute for instance
+methods of the class.  Specifying the code attribute to a method
+denotes that the value returned by the method should be
+instance-cached as C<< $object->{_method_name} >> (where
+I<method_name> is the name of the method).
+
+The class defines the C<flush_cache_methods> method, which clears all
+instance caches managed by the C<Object::CacheMethods> class.
+
+The class also defines the C<cache_methods> method.  The method must
+be invoked once methods in the class is defined.  If the method
+received arguments, methods with the names specified as arguments are
+wrapped to enable instance-caching as if the C<: Caches> code
+attribute were specified.  This feature would be useful when method is
+defined by some kind of generator such that you can't specify code
+attribute directly.
+
+=head1 AUTHORS
+
+id:motemen.
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
+
+=head1 ACKNOWLEDGEMENTS
+
+This module was originally created as part of Ugomemo Hatena project.
+
+=head1 LICENSE
+
+Copyright 2009-2012 Hatena <http://www.hatena.ne.jp/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
