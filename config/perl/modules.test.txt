@@ -1,5 +1,5 @@
+File::Temp
 JSON::XS
 Path::Class
 Test::Class
 Test::More
-

@@ -16,7 +16,7 @@ Makefile-setupenv: Makefile.setupenv
 Makefile.setupenv:
 	$(WGET) -O $@ https://raw.github.com/wakaba/perl-setupenv/master/Makefile.setupenv
 
-lperl local-perl perl-version perl-exec \
+lperl local-perl perl-version perl-exec local-submodules \
 pmb-install pmb-update cinnamon \
 generatepm: %: Makefile-setupenv
 	$(MAKE) --makefile Makefile.setupenv $@ \
@@ -51,7 +51,7 @@ PROVE = prove
 
 test: test-deps test-main
 
-test-deps: pmb-install
+test-deps: local-submodules pmb-install
 
 test-main:
 	PATH=$(PERL_PATH):$(PATH) PERL5LIB=$(shell cat config/perl/libs.txt) \
