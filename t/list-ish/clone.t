@@ -142,6 +142,13 @@ sub _as_hashref_2 : Test(4) {
   isnt $l->as_hashref, $l->as_hashref;
 } # _as_hashref_2
 
+# ------ as_hashref_by_key ------
+
+sub _as_hashref_by_key : Test(1) {
+  my $l = List::Ish->new ([10, 20]);
+  is_deeply $l->as_hashref_by_key (sub { $_ * 2 }), {20 => 10, 40 => 20};
+} # _as_hashref_by_key
+
 __PACKAGE__->runtests;
 
 1;

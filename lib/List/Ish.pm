@@ -1,7 +1,7 @@
 package List::Ish;
 use strict;
 use warnings;
-our $VERSION = '0.04';
+our $VERSION = '0.5';
 
 $Test::MoreMore::ListClass{+__PACKAGE__} = 1;
 
@@ -165,6 +165,10 @@ sub as_hashref {
     return {map { $_ => 1 } @{$_[0]}};
 }
 
+sub as_hashref_by_key {
+    return {map { $_[1]->() => $_ } @{$_[0]}};
+}
+
 sub reverse {
     my $self = CORE::shift;
     $self->new([ reverse @$self ]);
@@ -173,6 +177,12 @@ sub reverse {
 1;
 
 =head1 LICENSE
+
+Copyright (C) Hatena Inc. All Rights Reserved.
+
+Copyright 2009-2012 Hatena <http://www.hatena.com/>.
+
+Copyright 2012 Wakaba <w@suika.fam.cx>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -277,6 +277,18 @@ values are C<1>.
   $hashref = $list->as_hashref;
   eq_or_diff [sort keys %$hashref], [1, 2, 3];
 
+=item as_hashref_by_key ( I<$code> )
+
+Returns a hash reference that contains key/value pairs where the
+values are items in the list and the keys are stringified
+representations of the values returned by the code given as the
+argument to the method.  The code reference is invoked with an item in
+the list set to the C<$_> variable.
+
+  $list = List::Ish->new([1, 2, 3]);
+  $hashref = $list->as_hashref_by_key (sub { $_ * 10 });
+  eq_or_diff $hashref, {10 => 1, 20 => 2, 30 => 3};
+
 =back
 
 =head1 AVAILABILITY
@@ -336,7 +348,7 @@ Wakaba <w@suika.fam.cx>.
 
 Copyright (C) Hatena Inc. All Rights Reserved.
 
-Copyright 2009-2011 Hatena <http://www.hatena.com/>.
+Copyright 2009-2012 Hatena <http://www.hatena.com/>.
 
 Copyright 2012 Wakaba <w@suika.fam.cx>.
 
