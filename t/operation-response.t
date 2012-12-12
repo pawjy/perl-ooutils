@@ -241,6 +241,23 @@ sub _mk_accessors : Test(6) {
     is $res2->f, 343;
 } # _mk_accessors
 
+sub _as_jsonable_not_error : Test(2) {
+    my $res = test::Operation::Response::Response->new;
+    is_deeply $res->as_jsonable, {};
+    is_deeply $res->TO_JSON, $res->as_jsonable;
+}
+
+sub _as_jsonable_is_error : Test(2) {
+    my $res = test::Operation::Response::Response->new;
+    $res->set_error('error1');
+    is_deeply $res->as_jsonable, {
+        is_error => 1,
+        error_code => 10107999001,
+        error_msgid => 'response.test.error1',
+    };
+    is_deeply $res->TO_JSON, $res->as_jsonable;
+}
+
 __PACKAGE__->runtests;
 
 1;

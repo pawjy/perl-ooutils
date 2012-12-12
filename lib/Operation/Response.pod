@@ -37,6 +37,15 @@ error, the return value is C<200>.  Otherwise, if the response is in
 error whose type defines the HTTP status code, then the code is
 returned.  Otherwise, the return value is C<400>.
 
+=item $json = $res->as_jsonable
+
+Return the data structure that can be serialized as JSON by
+L<JSON::PP> or L<JSON::XS>, representing the response object's data.
+
+Note that since the class does define the C<TO_JSON> method, the
+object itself can be serialized by those modules directly, obtaining
+the same result as the C<as_jsonable> method.
+
 =back
 
 =head1 AUTHOR

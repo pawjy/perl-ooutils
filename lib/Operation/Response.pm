@@ -164,6 +164,23 @@ sub http_status {
         : 200;
 }
 
+sub as_jsonable {
+    my $res = shift;
+    if ($res->is_error) {
+        return {
+            is_error => 1,
+            error_msgid => $res->msgid,
+            error_code => $res->code,
+        };
+    } else {
+        return {};
+    }
+}
+
+sub TO_JSON {
+    return $_[0]->as_jsonable;
+}
+
 sub debug_msg_key {
     return 'RESPONSE';
 }
