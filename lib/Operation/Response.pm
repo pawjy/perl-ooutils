@@ -2,27 +2,60 @@ package Operation::Response;
 use strict;
 use warnings;
 our $VERSION = '1.0';
-use base qw(Class::Accessor::Fast Class::Data::Inheritable);
 use Exporter::Lite;
 use List::Ish;
 use Data::Dumper;
 
 our $GlobalCategoryCode ||= 9999_000_000;
 
-__PACKAGE__->mk_classdata(category_name => undef);
-__PACKAGE__->mk_classdata(category_code => undef);
-__PACKAGE__->mk_classdata(error_codes => undef);
-__PACKAGE__->mk_classdata(error_msgids => undef);
-__PACKAGE__->mk_classdata(code_to_msgid => undef);
-__PACKAGE__->mk_classdata(error_data_fields => undef);
+our $Defs = {};
 
-__PACKAGE__->mk_accessors(qw(
-    error
-    code
-    msgid
-));
+sub new {
+    return bless {}, $_[0];
+}
 
-my $Defs = {};
+sub mk_accessors {
+    my $class = shift;
+    for my $method (@_) {
+        eval sprintf q{
+            sub %s::%s {
+                if (@_ > 1) {
+                    $_[0]->{%s} = $_[1];
+                }
+                return $_[0]->{%s};
+            }
+            1;
+        }, $class, $method, $method, $method or die $@;
+    }
+}
+
+sub mk_classdata {
+    my ($class, $name, $default) = @_;
+    eval sprintf q{
+        sub %s::%s {
+            if (@_ > 1) {
+                $Operation::Response::Defs->{'%s'}->{%s} = $_[1];
+            }
+            return $Operation::Response::Defs->{'%s'}->{%s};
+        }
+        1;
+    }, $class, $name, $class, $name, $class, $name or die $@;
+    $Operation::Response::Defs->{$class}->{$name} = $default if defined $default;
+}
+
+sub category_name {
+    if (@_ > 1) {
+        $Defs->{$_[0]}->{category_name} = $_[1];
+    }
+    return $Defs->{$_[0]}->{category_name};
+}
+
+sub category_code {
+    if (@_ > 1) {
+        $Defs->{$_[0]}->{category_code} = $_[1];
+    }
+    return $Defs->{$_[0]}->{category_code};
+}
 
 sub set_category {
     my ($class, $name, $code) = @_;
@@ -39,14 +72,9 @@ sub define_error {
     $code += $class->category_code + $GlobalCategoryCode;
     my $msgid = sprintf 'response.%s.%s', $class->category_name, lc $type;
     
-    $class->error_codes({}) unless $class->error_codes;
-    $class->error_msgids({}) unless $class->error_msgids;
-    $class->code_to_msgid({}) unless $class->code_to_msgid;
-
-    $class->error_codes->{$type} = $code;
-    $class->error_msgids->{$type} = $msgid;
-    $class->code_to_msgid->{$code} = $msgid;
-    
+    $Defs->{$class}->{error_codes}->{$type} = $code;
+    $Defs->{$class}->{error_msgids}->{$type} = $msgid;
+    $Defs->{$class}->{code_to_msgid}->{$code} = $msgid;
     $Defs->{$class}->{http_status}->{$code} = $args{http_status}
         if $args{http_status};
 
@@ -61,19 +89,20 @@ sub set_error {
     my $self = shift;
     my $type = uc shift;
     $self->error(1);
-    $self->code($self->error_codes->{$type} or die "Unknown error type $type");
-    $self->msgid($self->error_msgids->{$type});
+    $self->code($Defs->{ref $self}->{error_codes}->{$type}
+                    or die "Unknown error type $type");
+    $self->msgid($Defs->{ref $self}->{error_msgids}->{$type});
     $self->errors->push({msgid => $self->msgid, code => $self->code});
 
-    my $edf = $self->error_data_fields;
-    $edf->each(sub { delete $self->{$_} }) if $edf;
+    for (@{$Defs->{ref $self}->{error_data_fields} ||= []}) {
+        delete $self->{$_};
+    }
 }
 
 sub define_error_data_fields {
     my ($class, @fields) = @_;
 
-    $class->error_data_fields($class->error_data_fields || List::Ish->new);
-    $class->error_data_fields->push(@fields);
+    push @{$Defs->{$class}->{error_data_fields} ||= []}, @fields;
     
     for my $field (@fields) {
         no strict 'refs';
@@ -108,6 +137,27 @@ sub merge_response {
 sub is_success {  !shift->error }
 sub is_error   { !!shift->error }
 
+sub error {
+    if (@_ > 1) {
+        $_[0]->{error} = $_[1];
+    }
+    return $_[0]->{error};
+}
+
+sub code {
+    if (@_ > 1) {
+        $_[0]->{code} = $_[1];
+    }
+    return $_[0]->{code};
+}
+
+sub msgid {
+    if (@_ > 1) {
+        $_[0]->{msgid} = $_[1];
+    }
+    return $_[0]->{msgid};
+}
+
 sub http_status {
     return $_[0]->code 
         ? $Defs->{ref $_[0]}->{http_status}->{$_[0]->code} || 400
@@ -135,7 +185,7 @@ sub debug_info {
     } else {
         return sprintf '<%s: %s>', ref $self, $self->errors->map(sub {
             my $fields = [];
-            for my $field (@{$self->error_data_fields or []}) {
+            for my $field (@{$Defs->{ref $self}->{error_data_fields} ||= []}) {
                 my $value = $_->{$field};
                 if (not defined $value) {
                     $value = '(undef)';

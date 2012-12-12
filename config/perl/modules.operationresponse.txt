@@ -1,8 +1,6 @@
-Carp
-Class::Accessor::Fast
-Class::Data::Inheritable
 Data::Dumper
 Exporter::Lite
+
 Path::Class
 Test::Class
 Test::More

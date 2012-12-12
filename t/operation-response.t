@@ -187,6 +187,60 @@ sub _merge_error_empty : Test(4) {
     ok $res1->is_error;
 }
 
+sub _mk_classdata : Test(6) {
+    {
+        package test::response::classdata;
+        use base qw(Operation::Response);
+        __PACKAGE__->mk_classdata(hoge => 123);
+        __PACKAGE__->mk_classdata('fuga');
+    }
+    {
+        package test::response::classdata2;
+        use base qw(Operation::Response);
+        __PACKAGE__->mk_classdata(fuga => 31);
+    }
+
+    is +test::response::classdata->hoge, 123;
+    is +test::response::classdata->fuga, undef;
+    test::response::classdata->fuga("aa");
+    is +test::response::classdata->fuga, "aa";
+    test::response::classdata->hoge("aa1");
+    is +test::response::classdata->hoge, "aa1";
+
+    is +test::response::classdata2->fuga, 31;
+    eval {
+        test::response::classdata2->hoge;
+        ok 0;
+    } or do {
+        ok 1;
+    };
+}
+
+sub _mk_accessors : Test(6) {
+    {
+        package test::response::accessors;
+        use base qw(Operation::Response);
+
+        __PACKAGE__->mk_accessors(qw(ab ss));
+        __PACKAGE__->mk_accessors('f');
+    }
+
+    my $res = test::response::accessors->new;
+    is $res->ab, undef;
+    $res->ab(464);
+    is $res->ab, 464;
+    $res->ab(0);
+    is $res->ab, 0;
+
+    $res->f('');
+    is $res->f, '';
+
+    my $res2 = test::response::accessors->new;
+    is $res2->f, undef;
+    $res2->f(343);
+    is $res2->f, 343;
+} # _mk_accessors
+
 __PACKAGE__->runtests;
 
 1;
