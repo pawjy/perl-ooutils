@@ -48,10 +48,14 @@ local/wakaba-packages: always
 # ------ Tests ------
 
 PROVE = prove
+GIT = git
 
 test: test-deps test-main
 
-test-deps: local-submodules pmb-install
+test-deps: git-submodules local-submodules pmb-install
+
+git-submodules:
+	$(GIT) submodule update --init
 
 test-main:
 	PATH=$(PERL_PATH):$(PATH) PERL5LIB=$(shell cat config/perl/libs.txt) \
