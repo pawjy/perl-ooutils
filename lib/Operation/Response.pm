@@ -22,6 +22,8 @@ __PACKAGE__->mk_accessors(qw(
     msgid
 ));
 
+my $Defs = {};
+
 sub set_category {
     my ($class, $name, $code) = @_;
     
@@ -33,6 +35,7 @@ sub define_error {
     my $class = shift;
     my $type = uc shift;
     my $code = shift;
+    my %args = @_;
     $code += $class->category_code + $GlobalCategoryCode;
     my $msgid = sprintf 'response.%s.%s', $class->category_name, lc $type;
     
@@ -43,6 +46,9 @@ sub define_error {
     $class->error_codes->{$type} = $code;
     $class->error_msgids->{$type} = $msgid;
     $class->code_to_msgid->{$code} = $msgid;
+    
+    $Defs->{$class}->{http_status}->{$code} = $args{http_status}
+        if $args{http_status};
 
     no strict 'refs';
     *{$class . '::' . $type} = sub { $code };
@@ -102,6 +108,12 @@ sub merge_response {
 sub is_success {  !shift->error }
 sub is_error   { !!shift->error }
 
+sub http_status {
+    return $_[0]->code 
+        ? $Defs->{ref $_[0]}->{http_status}->{$_[0]->code} || 400
+        : 200;
+}
+
 sub debug_msg_key {
     return 'RESPONSE';
 }
@@ -148,20 +160,9 @@ sub debug_info {
 
 1;
 
-__END__
-
-=head1 AUTHOR
-
-Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
-
-=head1 ACKNOWLEDGEMENTS
-
-This module was originally developed as part of the Flipnote Hatena
-project.  Thanks to id:antipop and id:onishi for their useful inputs.
-
 =head1 LICENSE
 
-Copyright 2009-2011 Hatena <http://www.hatena.ne.jp/>.
+Copyright 2009-2012 Hatena <http://www.hatena.ne.jp/>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

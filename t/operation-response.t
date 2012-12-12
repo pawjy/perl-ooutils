@@ -16,7 +16,7 @@ BEGIN {
     
     __PACKAGE__->set_category(test => 999);
     __PACKAGE__->define_error(error1 => 1);
-    __PACKAGE__->define_error(error2 => 100);
+    __PACKAGE__->define_error(error2 => 100, http_status => 401);
     
     __PACKAGE__->define_error_data_fields(qw(data1 data2));
     
@@ -28,7 +28,7 @@ BEGIN {
     eval q{ use test::Operation::Response::Response };
 }
 
-sub _instantiation : Test(6) {
+sub _instantiation : Test(7) {
     my $res = test::Operation::Response::Response->new;
     isa_ok $res, 'test::Operation::Response::Response';
     isa_ok $res, 'Operation::Response';
@@ -36,6 +36,7 @@ sub _instantiation : Test(6) {
     ok $res->is_success;
     is $res->code, undef;
     is $res->msgid, undef;
+    is $res->http_status, 200;
 }
 
 sub _constants : Test(4) {
@@ -46,11 +47,12 @@ sub _constants : Test(4) {
     is test::Operation::Response::Import::ERROR2(), 10_107_999_100;
 }
 
-sub _set_error_1 : Test(5) {
+sub _set_error_1 : Test(6) {
     my $res = test::Operation::Response::Response->new;
     $res->set_error('error1');
     is $res->code, 10_107_999_001;
     is $res->msgid, 'response.test.error1';
+    is $res->http_status, 400;
     ok $res->is_error;
     ok !$res->is_success;
     is_deeply $res->errors, [
@@ -58,11 +60,12 @@ sub _set_error_1 : Test(5) {
     ];
 }
 
-sub _set_error_2 : Test(5) {
+sub _set_error_2 : Test(6) {
     my $res = test::Operation::Response::Response->new;
     $res->set_error('error2');
     is $res->code, 10_107_999_100;
     is $res->msgid, 'response.test.error2';
+    is $res->http_status, 401;
     ok $res->is_error;
     ok !$res->is_success;
     is_deeply $res->errors, [

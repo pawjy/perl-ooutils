@@ -1,0 +1,58 @@
+=head1 NAME
+
+Operation::Response - Operation result object
+
+=head1 SYNOPSIS
+
+XXX
+
+=head1 DESCRIPTION
+
+XXX
+
+=head1 DEFINING ERROR TYPES
+
+XXX
+
+=over 4
+
+=item http_status => $code
+
+Specify the HTTP status code for the error.  If this option is not
+specified, it is defaulted to C<400>.  See also C<< $res->http_status
+>>.
+
+=cut
+
+=head1 METHODS OF RESPONSE OBJECTS
+
+XXX
+
+=over 4
+
+=item $code = $res->http_status
+
+The HTTP status code for the response.  If the response is not an
+error, the return value is C<200>.  Otherwise, if the response is in
+error whose type defines the HTTP status code, then the code is
+returned.  Otherwise, the return value is C<400>.
+
+=back
+
+=head1 AUTHOR
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
+
+=head1 ACKNOWLEDGEMENTS
+
+This module was originally developed as part of the Flipnote Hatena
+project.  Thanks to id:antipop and id:onishi for their useful inputs.
+
+=head1 LICENSE
+
+Copyright 2009-2012 Hatena <http://www.hatena.ne.jp/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
