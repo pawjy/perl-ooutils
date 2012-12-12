@@ -4,7 +4,7 @@ use warnings;
 our $VERSION = '1.0';
 use base qw(Class::Accessor::Fast Class::Data::Inheritable);
 use Exporter::Lite;
-use List::Rubyish;
+use List::Ish;
 use Data::Dumper;
 
 our $GlobalCategoryCode ||= 9999_000_000;
@@ -66,7 +66,7 @@ sub set_error {
 sub define_error_data_fields {
     my ($class, @fields) = @_;
 
-    $class->error_data_fields($class->error_data_fields || List::Rubyish->new);
+    $class->error_data_fields($class->error_data_fields || List::Ish->new);
     $class->error_data_fields->push(@fields);
     
     for my $field (@fields) {
@@ -85,7 +85,7 @@ sub define_error_data_fields {
 
 sub errors {
     my $self = shift;
-    return $self->{errors} ||= List::Rubyish->new;
+    return $self->{errors} ||= List::Ish->new;
 }
 
 sub merge_response {
