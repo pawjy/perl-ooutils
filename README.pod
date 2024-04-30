@@ -16,10 +16,23 @@ perl-ooutils - Tiny object-oriented programming utilities for Perl
 
 =head1 AUTHOR
 
-Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 HISTORY
+
+This Git repository was transferred to the Pawjy project at R6.4.30
+(30 April 2024).  The repository was at
+<https://github.com/wakaba/perl-ooutils>.
 
 =head1 LICENSE
 
-See each module for its license terms.
+See the documentations for the relevant modules.
+
+For files not covered by them:
+
+Copyright 2024 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut

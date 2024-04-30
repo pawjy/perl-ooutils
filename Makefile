@@ -11,6 +11,8 @@ updatenightly: local/bin/pmbp.pl updatedata
 
 # ------ Environment ------
 
+deps: git-submodules local-submodules pmb-install
+
 WGET = wget
 PERL = perl
 PERL_VERSION = latest
@@ -61,7 +63,7 @@ GIT = git
 
 test: test-deps test-main
 
-test-deps: git-submodules local-submodules pmb-install
+test-deps: deps
 
 git-submodules:
 	$(GIT) submodule update --init
