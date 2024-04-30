@@ -1,3 +1,4 @@
 [submodule "modules/perl-test-test"]
 	path = modules/perl-test-test
-	url = git://github.com/wakaba/perl-test-test
+	url = https://github.com/wakaba/perl-test-test
+	track = master
