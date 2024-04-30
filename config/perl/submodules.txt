@@ -1,2 +1,2 @@
-git://github.com/wakaba/perl-test-moremore
-git://github.com/wakaba/perl-test-directory
+https://github.com/wakaba/perl-test-moremore
+https://github.com/wakaba/perl-test-directory
